@@ -3,7 +3,6 @@ import { supabase, supabaseAdmin } from "@/lib/supabase";
 import { validateReservationInput } from "@/lib/validation";
 import { sendAdminNotification } from "@/lib/email";
 
-// GET /api/reservations?facility=swietlica&month=2024-01
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const facility = searchParams.get("facility");
@@ -43,31 +42,35 @@ export async function GET(request: NextRequest) {
   return NextResponse.json(data);
 }
 
-// POST /api/reservations - złóż nową rezerwację
 export async function POST(request: NextRequest) {
-  let body: unknown;
+  let body: {
+    facility: unknown;
+    date_from: unknown;
+    date_to: unknown;
+    purpose: unknown;
+    phone: unknown;
+  };
+
   try {
     body = await request.json();
   } catch {
     return NextResponse.json({ error: "Nieprawidłowy format danych" }, { status: 400 });
   }
 
-  const validation = validateReservationInput(body as { facility: unknown; date_from: unknown; date_to: unknown; purpose: unknown; phone: unknown });
+  const validation = validateReservationInput(body);
   if (!validation.valid || !validation.sanitized) {
     return NextResponse.json({ error: validation.error }, { status: 400 });
   }
 
   const { facility, date_from, date_to, purpose, phone } = validation.sanitized;
 
-  // POPRAWKA: prawidłowe sprawdzanie nakładania się godzin (nie całych dni)
-  // Dwie rezerwacje nakładają się gdy: start1 < end2 AND end1 > start2
   const { data: conflicts } = await supabaseAdmin
     .from("reservations")
     .select("id, date_from, date_to")
     .eq("facility", facility)
     .neq("status", "rejected")
-    .lt("date_from", date_to)   // istniejąca zaczyna się przed końcem nowej
-    .gt("date_to", date_from);  // istniejąca kończy się po początku nowej
+    .lt("date_from", date_to)
+    .gt("date_to", date_from);
 
   if (conflicts && conflicts.length > 0) {
     return NextResponse.json(
