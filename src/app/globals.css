@@ -1,0 +1,89 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'Source Serif 4', Georgia, serif;
+  
+  --color-forest-deep: #1f4622;
+  --color-forest-mid: #3d8c42;
+  --color-forest-light: #5ea863;
+  --color-cream: #f9f6f1;
+  --color-cream-dark: #f0ebe2;
+  --color-bark: #8b7355;
+  --color-stone: #6b6358;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-cream);
+  color: #2a2520;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Kalendarz - react-day-picker customization */
+.rdp {
+  --rdp-cell-size: 40px;
+  --rdp-accent-color: var(--color-forest-mid);
+  --rdp-background-color: var(--color-forest-light);
+  margin: 0;
+}
+
+.rdp-day_selected, 
+.rdp-day_selected:hover {
+  background-color: var(--color-forest-mid) !important;
+  color: white !important;
+}
+
+.rdp-day_today {
+  font-weight: 700;
+  color: var(--color-forest-deep);
+}
+
+.rdp-nav_button:hover {
+  background-color: var(--color-cream-dark);
+}
+
+/* Animacje */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.35s ease forwards;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-12px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.animate-slide-in {
+  animation: slideIn 0.3s ease forwards;
+}
+
+/* Zajęte sloty na kalendarzu */
+.day-busy {
+  background-color: #fee2e2 !important;
+  color: #991b1b !important;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.day-busy::after {
+  content: '●';
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 6px;
+  color: #dc2626;
+}
