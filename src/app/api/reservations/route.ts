@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Nieprawidłowy format danych" }, { status: 400 });
   }
 
-  const validation = validateReservationInput(body as Record<string, unknown>);
+  const validation = validateReservationInput(body as { facility: unknown; date_from: unknown; date_to: unknown; purpose: unknown; phone: unknown });
   if (!validation.valid || !validation.sanitized) {
     return NextResponse.json({ error: validation.error }, { status: 400 });
   }
